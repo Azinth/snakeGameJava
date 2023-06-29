@@ -74,10 +74,24 @@ public class GamePanel extends JPanel implements ActionListener {
         }
 
     }
-    public void newApple(){
-        appleX = random.nextInt((int)(SCREEN_WIDTH/UNIT_SIZE))*UNIT_SIZE; // generate a random x coordinate for the apple
-        appleY = random.nextInt((int)(SCREEN_HEIGHT/UNIT_SIZE))*UNIT_SIZE; // generate a random y coordinate for the apple
+    public void newApple() {
+        boolean appleOnSnake = true;
+
+        while (appleOnSnake) {
+            appleX = random.nextInt((int)(SCREEN_WIDTH/UNIT_SIZE))*UNIT_SIZE; // gera uma coordenada x aleatória para a maçã
+            appleY = random.nextInt((int)(SCREEN_HEIGHT/UNIT_SIZE))*UNIT_SIZE; // gera uma coordenada y aleatória para a maçã
+
+            // Verifica se a maçã está sobre a cobra
+            for (int i = 0; i < bodyParts; i++) {
+                if (x[i] == appleX && y[i] == appleY) {
+                    appleOnSnake = true;
+                    break;
+                }
+                appleOnSnake = false;
+            }
+        }
     }
+
     public void move(){
         for (int i = bodyParts; i > 0; i--) {
             x[i] = x[i-1]; // move the x coordinates of the snake
@@ -107,12 +121,15 @@ public class GamePanel extends JPanel implements ActionListener {
 
 
     }
+
+
     public void checkCollisions(){
         // check if the head of the snake collides with the apple
         for (int i = bodyParts; i > 0; i--) {
             if ((x[0] == x[i]) && (y[0] == y[i])){ // if the snake collides with itself
                 running = false;
             }
+
         }
         // check if the head of the snake collides with the left border
         if (x[0] < 0){
