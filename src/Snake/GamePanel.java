@@ -3,6 +3,8 @@ package Snake;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Random;
 public class GamePanel extends JPanel implements ActionListener {
     static final int SCREEN_WIDTH = 600;
@@ -140,16 +142,38 @@ public class GamePanel extends JPanel implements ActionListener {
         }
     }
     public void gameOver(Graphics g){
-        //Score
+        // Score
         g.setColor(Color.red);
         g.setFont(new Font("ink Free", Font.BOLD, 40));
         FontMetrics metrics1 = getFontMetrics(g.getFont());
-        g.drawString("Score: " + applesEaten, (SCREEN_WIDTH - metrics1.stringWidth("Score: " + applesEaten))/2,g.getFont().getSize());
-        //Game Over text
+        g.drawString("Score: " + applesEaten, (SCREEN_WIDTH - metrics1.stringWidth("Score: " + applesEaten))/2, g.getFont().getSize());
+
+        // Game Over text
         g.setColor(Color.red);
         g.setFont(new Font("ink Free", Font.BOLD, 75));
         FontMetrics metrics2 = getFontMetrics(g.getFont());
-        g.drawString("Game Over", (SCREEN_WIDTH - metrics2.stringWidth("Game Over"))/2,SCREEN_HEIGHT/2);
+        g.drawString("Game Over", (SCREEN_WIDTH - metrics2.stringWidth("Game Over"))/2, SCREEN_HEIGHT/2);
+
+        // Prompt player for name
+        g.setFont(new Font("ink Free", Font.BOLD, 30));
+        FontMetrics metrics3 = getFontMetrics(g.getFont());
+        g.drawString("Enter your name:", (SCREEN_WIDTH - metrics3.stringWidth("Enter your name:"))/2, SCREEN_HEIGHT/2 + 100);
+        g.dispose();
+
+        // Capture player's name using an input dialog or any other input method you prefer
+        String playerName = JOptionPane.showInputDialog("Enter your name:");
+
+        // Save player's name and score to a ranking data structure or file
+        savePlayerScore(playerName, applesEaten);
+    }
+    private void savePlayerScore(String playerName, int score) {
+        try {
+            FileWriter writer = new FileWriter("ranking.csv", true);
+            writer.append(playerName + "," + score + "\n");
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     @Override
     public void actionPerformed(ActionEvent e) {
